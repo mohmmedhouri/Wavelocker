@@ -42,7 +42,10 @@ int main(int argc, char **argv){
 		memcpy(CH1.PTON, set_durr_on, sizeof(set_durr_on));
 		memcpy(CH1.PTDur, set_period_on, sizeof(set_period_on));
 		CH1.CurStat='0';
-		
+		int c; // couter for loops 
+		float avrRef=0;
+		float avrEta=0;
+		float avr=0;
 
 				
 	//	seq_gen_mc(PosShi20,810,1);
@@ -67,15 +70,16 @@ int main(int argc, char **argv){
 
         float *buff2 = (float *)malloc(Num_SAMPLES * sizeof(float)); // Allocate space for for 2nd ADC 2 for Etalon
 	
-	cplx *buf = (cplx *)malloc(Num_SAMPLES * sizeof(cplx));
+		cplx *buf = (cplx *)malloc(Num_SAMPLES * sizeof(cplx));
 
-	cplx *buf2 = (cplx *)malloc(Num_SAMPLES* sizeof(cplx));
+		cplx *buf2 = (cplx *)malloc(Num_SAMPLES* sizeof(cplx));
 
 	while(1)
 	{
 		
 		 switch(CH1.CurStat) {
-      case '0' :  //  not channel found
+      
+	  case '0' :  //  not channel found
         
        		rp_AcqReset();
 		
@@ -150,6 +154,13 @@ int main(int argc, char **argv){
 		
 		for (i=128;i<255;i++)
 		{	
+			avrRef=0;
+			avrEta=0:
+			avr=0;
+			printf("Positve shift stage\n");
+			
+			for (c=0;c<50;c++)
+			{
 			printf("Positve shift stage\n");
 			
 			rp_AcqReset();
@@ -180,14 +191,25 @@ int main(int argc, char **argv){
                 	filler(buf2,buff2,Num_SAMPLES);
 
                 	fft(buf2,Num_SAMPLES);
+					
+					avrRef = avrRef+ maxia(cabsf(buf[j]),cabsf(buf[j-1]),cabsf(buf[j+1]));
+
+
+					avrEta = avrEta + maxia(cabsf(buf2[j]),cabsf(buf2[j-1]),cabsf(buf2[j+1]));
+					
+					avr= avr + (ETA/REF);
 			
-			CH1.obj[i].ref= maxia(cabsf(buf[j]),cabsf(buf[j-1]),cabsf(buf[j+1]));
+			
+			}
+			
+			CH1.obj[i].ref =    avrRef/50;
 
-			CH1.obj[i].etalon= maxia(cabsf(buf2[j]),cabsf(buf2[j-1]),cabsf(buf2[j+1]));
+			CH1.obj[i].etalon = avrEta/50;
 
-			CH1.obj[i].power=CH1.obj[i].etalon/CH1.obj[i].ref;
+			CH1.obj[i].power =  avr/50;
 			
 			seq_gen_mc(PosShi20,810,1);
+			
 			printf("%f  %f  %f \n",CH1.obj[i].ref,CH1.obj[i].etalon,CH1.obj[i].power);
 
 		} // end of for or positive tune
@@ -203,20 +225,20 @@ int main(int argc, char **argv){
 		break; // end of positve tune stage
 	
 	case '2' :
-		seq_gen_mc(CH1.selCH,810,1);
-
-                usleep(100);
-		
-		seq_gen_mc(CH1.selCH,810,1);
 
                 usleep(100);
 
 
 		
 		 for (i=127;i>0;i--)
-                {
-			 printf("negative shift stage\n");
-
+         {
+			 avrRef=0;
+			 avrEta=0:
+			 avr=0;
+			 
+			printf("negative shift stage\n");
+			for (c=0;c<50;c++)
+		{
                         rp_AcqReset();
 
                          rp_AcqSetDecimation(RP_DEC_1024);
@@ -245,22 +267,34 @@ int main(int argc, char **argv){
                         filler(buf2,buff2,Num_SAMPLES);
 
                         fft(buf2,Num_SAMPLES);
+						
+					avrRef = avrRef+ maxia(cabsf(buf[j]),cabsf(buf[j-1]),cabsf(buf[j+1]));
 
-                        CH1.obj[i].ref= maxia(cabsf(buf[j]),cabsf(buf[j-1]),cabsf(buf[j+1]));
+					avrEta = avrEta + maxia(cabsf(buf2[j]),cabsf(buf2[j-1]),cabsf(buf2[j+1]));
+					
+					avr= avr + (avrEta/avrRef);
+			
+			
+			}
+			
+			CH1.obj[i].ref =    avrRef/50;
 
-                        CH1.obj[i].etalon= maxia(cabsf(buf2[j]),cabsf(buf2[j-1]),cabsf(buf2[j+1]));
+			CH1.obj[i].etalon = avrEta/50;
 
-                        CH1.obj[i].power=CH1.obj[i].etalon/CH1.obj[i].ref;
+			CH1.obj[i].power =  avr/50;
+			
+			seq_gen_mc(PosShi20,810,1);
+			
+                       
 
-                        seq_gen_mc(Negshi20,810,1);
+            } // end of for or negative tune
+			
+			for (i=0;i<128;i++)
+			{
+				seq_gen_mc(PosShi20,810,1);
+				usleep(68800);
 
-                } // end of for or positive tune
-	 for (i=0;i<128;i++)
-	{
-	 seq_gen_mc(PosShi20,810,1);
-	usleep(68800);
-
-	}
+			}
 
 	 CH1.CurStat='3';
 
@@ -286,7 +320,7 @@ int main(int argc, char **argv){
 
 	printf("tracking stage \n");
 
-	float avr=0;
+	avr=0;
 	for (i=0 ;i<50;i++)
 	{
 	  rp_AcqReset();
@@ -321,23 +355,13 @@ int main(int argc, char **argv){
 
 
 		float ETA=maxia(cabsf(buf2[j]),cabsf(buf[j-1]),cabsf(buf2[j+1]));
+		
 		avr=avr+ETA/REF;
 	}
 		printf("%f \n",avr/50);
 	 break ;
-	
-	
 			
-		
-		//float AVR_ref=(cabsf(buf[j])+cabsf(buf[j-1])+cabsf(buf[j+1]))/3;
-		
-		//Outputing and releasing resources
-
-		
-	//	Result_output(buf,buf2,Num_SAMPLES);
-//	printf("Ref: %f \n",abs(buf[1744]));
-//	printf("eta: %f \n",abs(buf2[1744]));
-
+			
 	
 	/* Sampled signal printing*/
 	//	sampler_print(buff,buff2,"Ref_ADC.txt","Etalon_ADC.txt",Num_SAMPLES);
