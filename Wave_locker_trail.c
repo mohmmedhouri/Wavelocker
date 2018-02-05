@@ -354,7 +354,7 @@ int main(int argc, char **argv){
 		float REF=maxia(cabsf(buf[j]),cabsf(buf[j-1]),cabsf(buf[j+1]));
 
 
-		float ETA=maxia(cabsf(buf2[j]),cabsf(buf[j-1]),cabsf(buf2[j+1]));
+		float ETA=maxia(cabsf(buf2[j]),cabsf(buf2[j-1]),cabsf(buf2[j+1]));
 		
 		avr=avr+ETA/REF;
 	}
