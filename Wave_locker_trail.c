@@ -139,7 +139,7 @@ int main(int argc, char **argv){
 		for (i=128;i<255;i++)
 		{	
 			avrRef=0;
-			avrEta=0:
+			avrEta=0;
 			avr=0;
 			printf("Positve shift stage\n");
 			
@@ -181,7 +181,7 @@ int main(int argc, char **argv){
 
 					avrEta = avrEta + maxia(cabsf(buf2[j]),cabsf(buf2[j-1]),cabsf(buf2[j+1]));
 					
-					avr= avr + (ETA/REF);
+					avr= avr + (avrEta/avrRef);
 			
 			
 			}
@@ -217,7 +217,7 @@ int main(int argc, char **argv){
 		 for (i=127;i>0;i--)
          {
 			 avrRef=0;
-			 avrEta=0:
+			 avrEta=0;
 			 avr=0;
 			 
 			printf("negative shift stage\n");
