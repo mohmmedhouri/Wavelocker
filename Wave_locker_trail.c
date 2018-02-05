@@ -48,23 +48,7 @@ int main(int argc, char **argv){
 		float avr=0;
 
 				
-	//	seq_gen_mc(PosShi20,810,1);
-	//	sleep(1);
-		/*
-		seq_gen_mc(setch31,810,1);
-			
-		sleep(1);
-		seq_gen_mc(set_period_on,810,1);
-                sleep(1);
-                seq_gen_mc(set_durr_on,810,1);
-		
-		sleep(1);
-		*/
-	//	seq_gen_mc(PosShi20,810,1);
-		/* resource allocation*/
 
-	//float AVR_eta;
-	//float AVR_ref;
 		
         float *buff  = (float *)malloc(Num_SAMPLES * sizeof(float)); // Allocate space for for 1st ADC 1 for reference 
 
@@ -208,7 +192,7 @@ int main(int argc, char **argv){
 
 			CH1.obj[i].power =  avr/50;
 			
-			seq_gen_mc(PosShi20,810,1);
+			seq_gen_mc(PosShi6,810,1);
 			
 			printf("%f  %f  %f \n",CH1.obj[i].ref,CH1.obj[i].etalon,CH1.obj[i].power);
 
@@ -216,7 +200,7 @@ int main(int argc, char **argv){
 
 		for (i=0;i<128;i++)
 		{
-		 	seq_gen_mc(Negshi20,810,1);
+		 	seq_gen_mc(NegShi6,810,1);
 			usleep(68800);
 		} 
 
@@ -283,7 +267,7 @@ int main(int argc, char **argv){
 
 			CH1.obj[i].power =  avr/50;
 			
-			seq_gen_mc(PosShi20,810,1);
+			seq_gen_mc(NegShi6,810,1);
 			
                        
 
@@ -291,7 +275,7 @@ int main(int argc, char **argv){
 			
 			for (i=0;i<128;i++)
 			{
-				seq_gen_mc(PosShi20,810,1);
+				seq_gen_mc(PosShi6,810,1);
 				usleep(68800);
 
 			}
@@ -362,12 +346,6 @@ int main(int argc, char **argv){
 	 break ;
 			
 			
-	
-	/* Sampled signal printing*/
-	//	sampler_print(buff,buff2,"Ref_ADC.txt","Etalon_ADC.txt",Num_SAMPLES);
-	//seq_gen_mc(PosShi20,810,1);
-	//sleep(1);
-	//seq_gen_mc(Negshi20,810,1);
 		
 	}// end of switch
 
