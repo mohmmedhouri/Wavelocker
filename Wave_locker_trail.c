@@ -301,21 +301,116 @@ int main(int argc, char **argv){
 	int differ=-128+data;
 	if (differ<0)
 	{
+			
+	do 
+	{
+			seq_gen_mc(Negshi20,810,1);
+			avr=0;
+		for (i=0 ;i<50;i++)
+		{
+		  rp_AcqReset();
+
+					   rp_AcqSetDecimation(RP_DEC_1024);
+
+					   rp_AcqSetSamplingRate(RP_SMP_122_070K);
+
+
+					   rp_AcqStart();
+
+
+					   usleep(68800);
+
+					  rp_AcqStop();
+
+
+					  rp_AcqGetOldestDataV(RP_CH_1, &Num_SAMPLES, buff);
+
+
+					 rp_AcqGetOldestDataV(RP_CH_2, &Num_SAMPLES, buff2);
+
+					 filler(buf,buff,Num_SAMPLES);
+
+					fft(buf,Num_SAMPLES);
+
+					filler(buf2,buff2,Num_SAMPLES);
+
+					fft(buf2,Num_SAMPLES);
+				
+			float REF=maxia(cabsf(buf[j]),cabsf(buf[j-1]),cabsf(buf[j+1]));
+
+
+			float ETA=maxia(cabsf(buf2[j]),cabsf(buf2[j-1]),cabsf(buf2[j+1]));
+			
+			avr=avr+ETA/REF;
+		}
+	}while((avr/50)<50*CH1.obj[data].power/100);// end of do while
+		
+			
+			
+		
+		/*
 		for (i=0;i<abs(differ)*3/4;i++)
 		{
 			seq_gen_mc(Negshi20,810,1);
 			usleep(68800);
 		}
+		*/
 		
-	}
+	} // end of if
 	else
 	{
+		
+		
+		do 
+	{
+			seq_gen_mc(PosShi20,810,1);
+			avr=0;
+		for (i=0 ;i<50;i++)
+		{
+		  rp_AcqReset();
+
+					   rp_AcqSetDecimation(RP_DEC_1024);
+
+					   rp_AcqSetSamplingRate(RP_SMP_122_070K);
+
+
+					   rp_AcqStart();
+
+
+					   usleep(68800);
+
+					  rp_AcqStop();
+
+
+					  rp_AcqGetOldestDataV(RP_CH_1, &Num_SAMPLES, buff);
+
+
+					 rp_AcqGetOldestDataV(RP_CH_2, &Num_SAMPLES, buff2);
+
+					 filler(buf,buff,Num_SAMPLES);
+
+					fft(buf,Num_SAMPLES);
+
+					filler(buf2,buff2,Num_SAMPLES);
+
+					fft(buf2,Num_SAMPLES);
+				
+			float REF=maxia(cabsf(buf[j]),cabsf(buf[j-1]),cabsf(buf[j+1]));
+
+
+			float ETA=maxia(cabsf(buf2[j]),cabsf(buf2[j-1]),cabsf(buf2[j+1]));
+			
+			avr=avr+ETA/REF;
+		}
+	}while((avr/50)<70*CH1.obj[data].power/100);// end of do while
+		/*
 		for (i=0;i<abs(differ)*3/4;i++)
 		{
 			seq_gen_mc(PosShi20,810,1);
 			usleep(68800);
 		}
-	}
+		*/
+	} // end of else
 	
 	
 	
