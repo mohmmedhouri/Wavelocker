@@ -343,7 +343,7 @@ int main(int argc, char **argv){
 			
 			avr=avr+ETA/REF;
 		}
-	}while((avr/50)<50*CH1.obj[data].power/100);// end of do while
+	}while((avr/50)<20*CH1.obj[data].power/100);// end of do while
 		
 			
 			
@@ -402,7 +402,7 @@ int main(int argc, char **argv){
 			
 			avr=avr+ETA/REF;
 		}
-	}while((avr/50)<70*CH1.obj[data].power/100);// end of do while
+	}while((avr/50)<20*CH1.obj[data].power/100);// end of do while
 		/*
 		for (i=0;i<abs(differ)*3/4;i++)
 		{
