@@ -22,6 +22,12 @@ struct channel_info {
    int PTON  [58];
    int PTDur [58];
    int PTFrq [58];
+   int OL; // OuterLoop 
+   int IL; // InternalLoop
+   float Accumlate;
+   int Slop;
+   int Tracking Tolarance;
+   int PilotToneIndex;
 
    struct tracking_data obj [ 255 ];
    
@@ -36,14 +42,12 @@ int OptiPoint (struct tracking_data obj [ ],int size)
 {
    int max=0;
 	int i;
-	for (i=1;i<size;i++){
-	if(obj[max].power<obj[i].power)
-	 {
-
-	max=i;
-	
-	}
-
+	for (i=1;i<size;i++)
+	{
+		if(obj[max].power<obj[i].power)
+	 	{
+			max=i;
+		}
 	}
 
 return	max;
