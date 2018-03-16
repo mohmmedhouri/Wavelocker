@@ -38,7 +38,7 @@ int main(int argc, char **argv){
 		rp_DpinSetDirection (RP_DIO4_N, RP_OUT);
 		rp_DpinSetState(RP_DIO4_N,RP_LOW);
 	  	struct channel_info CH1;
-		memcpy(CH1.selCH, setch31, sizeof (setch31));
+		memcpy(CH1.selCH, setch28, sizeof (setch28));
 		memcpy(CH1.PTON, set_durr_on, sizeof(set_durr_on));
 		memcpy(CH1.PTDur, set_period_on, sizeof(set_period_on));
 		CH1.CurStat='0';
@@ -77,23 +77,23 @@ int main(int argc, char **argv){
 		
                 seq_gen_mc(CH1.selCH,810,1);
 
-                usleep(100);
+                usleep(1000);
 
                 seq_gen_mc(CH1.PTON,810,1);
 
-                usleep(1);
+                usleep(1000);
 		
 		seq_gen_mc(PtFrq505,810,1);
 		
-		usleep(1);
+		usleep(1000);
 		
                 seq_gen_mc(CH1.PTDur,810,1);
 
-                usleep(1);
+                usleep(1000);
 
                 seq_gen_mc(ptmd32,810,1);
 
-		
+		usleep(1000);
 	
 		rp_AcqStart();
         
@@ -144,11 +144,9 @@ int main(int argc, char **argv){
 			avrRef=0;
 			avrEta=0;
 			avr=0;
-			printf("Positve shift stage\n");
-			
+			printf("Postive shift Stage \n ");
 			for (c=0;c<50;c++)
 			{
-			printf("Positve shift stage\n");
 			
 			rp_AcqReset();
 
@@ -204,7 +202,7 @@ int main(int argc, char **argv){
 		for (i=0;i<40;i++)
 		{
 		 	seq_gen_mc(Negshi20,810,1);
-			usleep(68800);
+			usleep(1000000);
 		} 
 
 		 CH1.CurStat='2';
@@ -271,7 +269,8 @@ int main(int argc, char **argv){
 			CH1.obj[i].power =  avr/50;
 			
 			seq_gen_mc(Negshi20,810,1);
-			
+			printf("%f  %f  %f \n",CH1.obj[i].ref,CH1.obj[i].etalon,CH1.obj[i].power);
+	
                        
 
             } // end of for or negative tune
@@ -279,7 +278,7 @@ int main(int argc, char **argv){
 			for (i=0;i<40;i++)
 			{
 				seq_gen_mc(PosShi20,810,1);
-				usleep(68800);
+				usleep(1000000);
 
 			}
 
@@ -343,7 +342,9 @@ int main(int argc, char **argv){
 			
 			avr=avr+ETA/REF;
 		}
-	}while((avr/50)<20*CH1.obj[data].power/100);// end of do while
+		printf("%f \n",avr/50);
+	}while((avr/50)<2.9);//modified
+	// }while((avr/50)<50*CH1.obj[data+1].power/100);// end of do while dynamic
 		
 			
 			
@@ -402,7 +403,9 @@ int main(int argc, char **argv){
 			
 			avr=avr+ETA/REF;
 		}
-	}while((avr/50)<20*CH1.obj[data].power/100);// end of do while
+		printf("%f \n",avr/50);
+	}while(avr/50<2.9);//modified
+	// }while((avr/50)<50*CH1.obj[data+1].power/100);// end of do while dynamic
 		/*
 		for (i=0;i<abs(differ)*3/4;i++)
 		{
@@ -576,4 +579,3 @@ int main(int argc, char **argv){
         rp_Release();
         return 0;
 }
-//end of the code
